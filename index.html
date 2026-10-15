@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Thuto Notes — Free CAPS exam coach for South African matriculants</title>
+<meta name="description" content="Thuto Notes is a free, offline-capable, CAPS-locked AI study companion for NSC Grade 11 &amp; 12 learners. Real DBE past papers, six subjects, native Afrikaans, built for the phone in your pocket." />
+<meta name="theme-color" content="#15131E" />
+<link rel="icon" type="image/png" href="app-icon.png" />
+<link rel="apple-touch-icon" href="app-icon.png" />
+
+<!-- Open Graph -->
+<meta property="og:title" content="Thuto Notes — Education is light." />
+<meta property="og:description" content="A free, offline, CAPS-locked AI exam coach for South African matriculants. Real past papers. Six subjects. Native Afrikaans." />
+<meta property="og:type" content="website" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --ink:#15131E;          /* deep warm night — the exam hall */
+  --ink-soft:#211C30;     /* raised dark surface */
+  --ink-line:#332C45;
+  --paper:#FBF8F1;        /* warm paper */
+  --paper-dim:#F2ECDF;    /* soft page shade */
+  --paper-line:#E7DFCF;
+  --lesedi:#F4B740;       /* the light — signature gold */
+  --lesedi-deep:#E0982A;
+  --lesedi-soft:#FBEBC6;
+  --indigo:#5A48E8;       /* refined brand violet, used with restraint */
+  --indigo-soft:#EBE7FF;
+  --verify:#2E8B6B;       /* correct / verified, sparingly */
+  --text:#1A1723;
+  --muted:#5C5568;
+  --muted-dim:#8A8397;
+  --paper-on-dark:#EFEAF7;
+  --muted-on-dark:#B4ADC4;
+
+  --serif:'Fraunces',Georgia,serif;
+  --sans:'Manrope',system-ui,-apple-system,sans-serif;
+  --mono:'Space Grotesk',ui-monospace,monospace;
+
+  --wrap:1180px;
+  --r-lg:26px;
+  --r-md:18px;
+  --r-sm:12px;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  font-family:var(--sans);
+  background:var(--paper);
+  color:var(--text);
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+a{color:inherit;text-decoration:none}
+img,svg{display:block}
+::selection{background:var(--lesedi);color:var(--ink)}
+
+.wrap{max-width:var(--wrap);margin:0 auto;padding:0 24px}
+.eyebrow{
+  font-family:var(--mono);
+  font-size:12px;letter-spacing:.22em;text-transform:uppercase;
+  font-weight:600;color:var(--lesedi-deep);
+  display:inline-flex;align-items:center;gap:10px;
+}
+.eyebrow.on-dark{color:var(--lesedi)}
+.eyebrow .tick{width:22px;height:1px;background:currentColor;opacity:.55}
+
+h1,h2,h3{font-family:var(--serif);font-weight:600;line-height:1.05;letter-spacing:-.015em}
+.serif-italic{font-style:italic;font-weight:500}
+
+/* Focus */
+a:focus-visible,button:focus-visible{outline:2px solid var(--indigo);outline-offset:3px;border-radius:6px}
+
+/* ---------- Buttons ---------- */
+.btn{
+  display:inline-flex;align-items:center;gap:12px;
+  font-family:var(--sans);font-weight:700;font-size:15px;
+  padding:15px 22px;border-radius:14px;border:1px solid transparent;
+  cursor:pointer;transition:transform .25s ease,box-shadow .25s ease,background .25s ease;
+  white-space:nowrap;
+}
+.btn-gold{background:var(--lesedi);color:var(--ink);box-shadow:0 10px 28px -10px rgba(224,152,42,.7)}
+.btn-gold:hover{transform:translateY(-2px);box-shadow:0 16px 34px -10px rgba(224,152,42,.85)}
+.btn-ghost-dark{background:transparent;color:var(--paper-on-dark);border-color:var(--ink-line)}
+.btn-ghost-dark:hover{border-color:var(--lesedi);color:#fff}
+.btn-ink{background:var(--ink);color:var(--paper)}
+.btn-ink:hover{transform:translateY(-2px)}
+.btn .play{
+  width:30px;height:30px;border-radius:9px;display:grid;place-items:center;flex:none;
+  background:rgba(21,19,30,.12);
+}
+.btn-gold .play{background:rgba(21,19,30,.14)}
+.btn .play svg{width:15px;height:15px}
+.btn small{display:block;font-size:10px;font-weight:600;letter-spacing:.12em;opacity:.7;text-transform:uppercase;line-height:1}
+.btn .lbl2{font-size:16px;line-height:1.1}
+
+/* ---------- Nav ---------- */
+header.nav{position:fixed;inset:0 0 auto 0;z-index:60;transition:all .4s ease;padding:16px 0}
+header.nav.solid{background:rgba(251,248,241,.82);backdrop-filter:blur(14px);border-bottom:1px solid var(--paper-line);padding:10px 0}
+.nav-in{display:flex;align-items:center;justify-content:space-between;gap:24px}
+.brand{display:flex;align-items:center;gap:11px;font-family:var(--serif);font-size:22px;font-weight:600;letter-spacing:-.02em;color:var(--paper-on-dark)}
+header.nav.solid .brand{color:var(--ink)}
+.brand .mark{
+  width:38px;height:38px;border-radius:11px;flex:none;position:relative;
+  background:linear-gradient(150deg,var(--indigo),#3d2fc0);
+  display:grid;place-items:center;box-shadow:0 8px 20px -8px rgba(90,72,232,.7);
+}
+.brand .mark::after{content:"";position:absolute;top:-3px;right:-3px;width:12px;height:12px;border-radius:50%;background:var(--lesedi);box-shadow:0 0 14px 2px var(--lesedi)}
+.brand .mark svg{width:19px;height:19px}
+.brand-img{width:40px;height:40px;border-radius:11px;flex:none;object-fit:cover;
+  box-shadow:0 6px 16px -7px rgba(90,72,232,.6),0 2px 8px -3px rgba(0,0,0,.3)}
+.showcase{position:relative;z-index:2;width:min(400px,88vw);border-radius:30px;overflow:hidden;
+  border:1px solid rgba(255,255,255,.08);
+  box-shadow:0 44px 90px -30px rgba(0,0,0,.7),0 0 60px -12px rgba(244,183,64,.28)}
+.showcase img{width:100%;height:auto;display:block}
+.nav-links{display:flex;align-items:center;gap:6px}
+.nav-links a{font-size:14px;font-weight:600;color:var(--muted-on-dark);padding:8px 13px;border-radius:9px;transition:color .2s,background .2s}
+header.nav.solid .nav-links a{color:var(--muted)}
+.nav-links a:hover{color:var(--lesedi)}
+header.nav.solid .nav-links a:hover{color:var(--indigo);background:var(--indigo-soft)}
+.nav-cta{display:flex;align-items:center;gap:12px}
+.nav-cta .btn{padding:11px 18px;font-size:14px}
+.burger{display:none;background:none;border:none;cursor:pointer;padding:8px;color:var(--paper-on-dark)}
+header.nav.solid .burger{color:var(--ink)}
+.burger svg{width:26px;height:26px}
+
+/* mobile menu */
+.mobile-menu{position:fixed;inset:0;z-index:70;background:var(--ink);padding:26px 24px;transform:translateY(-100%);transition:transform .4s cubic-bezier(.6,.05,.1,1);display:flex;flex-direction:column}
+.mobile-menu.open{transform:translateY(0)}
+.mm-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:40px}
+.mm-top .brand{color:var(--paper-on-dark)}
+.mm-close{background:none;border:none;color:var(--paper-on-dark);cursor:pointer}
+.mm-close svg{width:28px;height:28px}
+.mobile-menu nav{display:flex;flex-direction:column;gap:4px}
+.mobile-menu nav a{font-family:var(--serif);font-size:30px;color:var(--paper-on-dark);padding:12px 0;border-bottom:1px solid var(--ink-line)}
+.mobile-menu nav a:active{color:var(--lesedi)}
+.mobile-menu .btn{margin-top:32px;justify-content:center}
+
+/* ---------- HERO ---------- */
+.hero{position:relative;background:var(--ink);color:var(--paper-on-dark);overflow:hidden;padding:150px 0 90px}
+.hero::before{content:"";position:absolute;top:-15%;left:-10%;width:60%;height:120%;
+  background:radial-gradient(circle at 30% 30%,rgba(90,72,232,.22),transparent 60%);pointer-events:none}
+.hero::after{content:"";position:absolute;top:0;right:-5%;width:55%;height:90%;
+  background:radial-gradient(circle at 70% 30%,rgba(244,183,64,.16),transparent 60%);pointer-events:none}
+.hero-grid{position:relative;display:grid;grid-template-columns:1.05fr .95fr;gap:60px;align-items:center}
+.hero-copy{max-width:560px}
+.hero h1{font-size:clamp(42px,6vw,70px);color:#fff;margin:26px 0 22px}
+.hero h1 .lit{color:var(--lesedi);position:relative;font-style:italic}
+.hero p.lead{font-size:19px;color:var(--muted-on-dark);max-width:490px;margin-bottom:34px}
+.hero-cta{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:38px}
+.hero-chips{display:flex;flex-wrap:wrap;gap:10px}
+.chip{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--paper-on-dark);
+  background:rgba(255,255,255,.04);border:1px solid var(--ink-line);padding:8px 14px;border-radius:100px}
+.chip svg{width:15px;height:15px;color:var(--lesedi)}
+
+/* Phone */
+.phone-stage{position:relative;display:flex;justify-content:center;align-items:center;min-height:540px}
+.phone-stage .halo{position:absolute;width:420px;height:420px;border-radius:50%;
+  background:radial-gradient(circle,rgba(244,183,64,.35),rgba(90,72,232,.18) 45%,transparent 70%);
+  filter:blur(10px);animation:breathe 6s ease-in-out infinite}
+@keyframes breathe{0%,100%{transform:scale(1);opacity:.85}50%{transform:scale(1.06);opacity:1}}
+.phone{position:relative;width:300px;height:610px;border-radius:44px;padding:11px;z-index:2;
+  background:linear-gradient(160deg,#2c2640,#191524);
+  box-shadow:0 40px 80px -30px rgba(0,0,0,.7),0 0 0 1px rgba(255,255,255,.05),0 0 60px -10px rgba(244,183,64,.35)}
+.screen{width:100%;height:100%;border-radius:34px;overflow:hidden;background:#fff;display:flex;flex-direction:column}
+.ph-top{background:var(--indigo);color:#fff;padding:14px 18px 20px}
+.ph-status{display:flex;justify-content:space-between;align-items:center;font-size:11px;opacity:.85;margin-bottom:14px}
+.ph-status b{font-weight:700}
+.ph-greet{display:flex;align-items:center;gap:8px;font-size:12px;opacity:.85;margin-bottom:4px}
+.ph-greet .dot{width:8px;height:8px;border-radius:50%;background:var(--lesedi);box-shadow:0 0 8px var(--lesedi)}
+.ph-h{font-family:var(--serif);font-size:23px;font-weight:600;margin-bottom:5px}
+.ph-sub{font-size:11.5px;opacity:.8;line-height:1.45}
+.ph-stats{display:flex;gap:8px;margin-top:16px}
+.ph-stat{flex:1;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:9px 6px;text-align:center}
+.ph-stat b{display:block;font-family:var(--serif);font-size:18px;font-weight:600}
+.ph-stat span{font-size:9px;opacity:.75}
+.ph-body{background:#F4F1F9;flex:1;padding:13px;display:flex;flex-direction:column;gap:10px}
+.ph-card{background:#fff;border-radius:15px;padding:12px;display:flex;align-items:center;gap:11px;box-shadow:0 2px 10px -6px rgba(20,15,40,.2)}
+.ph-ic{width:38px;height:38px;border-radius:11px;flex:none;display:grid;place-items:center}
+.ph-ic svg{width:19px;height:19px}
+.ph-card .t{font-size:12px;font-weight:800;color:#241f33}
+.ph-card .d{font-size:10px;color:#8a8397;margin-top:1px}
+.ph-card.stream .ph-ic{background:var(--lesedi-soft)}
+.ph-card.helper{background:linear-gradient(100deg,var(--verify),#25795b);color:#fff;box-shadow:0 10px 24px -10px rgba(46,139,107,.6)}
+.ph-card.helper .ph-ic{background:rgba(255,255,255,.2)}
+.ph-card.helper .t{color:#fff}.ph-card.helper .d{color:rgba(255,255,255,.85)}
+.ph-card.note .ph-ic{background:var(--indigo-soft)}
+.ph-tag{margin-left:auto;font-size:8px;font-weight:800;letter-spacing:.05em;background:var(--verify);color:#fff;padding:3px 6px;border-radius:6px}
+.ph-lbl{font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:#9a93a8;margin:2px 2px -2px}
+.ph-nav{background:#fff;border-top:1px solid #ece7f2;display:flex;justify-content:space-around;padding:9px 0}
+.ph-nav i{display:flex;flex-direction:column;align-items:center;gap:3px;color:#b3adc0;font-style:normal;font-size:8px;font-weight:700}
+.ph-nav i.on{color:var(--indigo)}
+.ph-nav i svg{width:19px;height:19px}
+.streak-xp{margin-left:auto;font-size:10px;font-weight:800;color:var(--lesedi-deep);background:var(--lesedi-soft);padding:4px 8px;border-radius:8px}
+
+/* ---------- Facts strip ---------- */
+.facts{background:var(--ink);border-top:1px solid var(--ink-line);padding:0}
+.facts-in{display:flex;flex-wrap:wrap;justify-content:space-between;gap:20px 40px;padding:26px 24px;max-width:var(--wrap);margin:0 auto}
+.fact{display:flex;align-items:center;gap:12px}
+.fact b{font-family:var(--serif);font-size:20px;color:#fff;font-weight:600}
+.fact span{font-size:13px;color:var(--muted-on-dark);max-width:120px;line-height:1.3}
+.fact .fi{width:34px;height:34px;border-radius:9px;background:rgba(244,183,64,.12);display:grid;place-items:center;flex:none}
+.fact .fi svg{width:17px;height:17px;color:var(--lesedi)}
+
+/* ---------- Section base ---------- */
+.section{padding:110px 0;position:relative}
+.section-head{max-width:660px;margin-bottom:56px}
+.section-head.center{margin-left:auto;margin-right:auto;text-align:center}
+.section-head h2{font-size:clamp(32px,4.4vw,50px);margin:20px 0 18px;color:var(--text)}
+.section-head p{font-size:18px;color:var(--muted)}
+.on-dark .section-head h2{color:#fff}
+.on-dark .section-head p{color:var(--muted-on-dark)}
+
+/* ---------- Pillars ---------- */
+.pillars{background:var(--paper)}
+.pillar-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+.pillar{
+  background:#fff;border:1px solid var(--paper-line);border-radius:var(--r-lg);
+  padding:34px;position:relative;overflow:hidden;transition:transform .4s ease,box-shadow .4s ease,border-color .4s ease;
+}
+.pillar:hover{transform:translateY(-5px);box-shadow:0 30px 60px -30px rgba(30,20,50,.28);border-color:transparent}
+.pillar .num{font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.2em;color:var(--muted-dim)}
+.pillar .pic{width:56px;height:56px;border-radius:16px;display:grid;place-items:center;margin:18px 0 20px}
+.pillar .pic svg{width:26px;height:26px}
+.pillar h3{font-size:24px;margin-bottom:10px;color:var(--text)}
+.pillar p{font-size:15px;color:var(--muted);margin-bottom:18px}
+.pillar ul{list-style:none;display:flex;flex-direction:column;gap:9px}
+.pillar li{display:flex;gap:10px;font-size:13.5px;font-weight:600;color:#403949}
+.pillar li svg{width:16px;height:16px;flex:none;margin-top:2px}
+.pc-gold .pic{background:var(--lesedi-soft);color:var(--lesedi-deep)}
+.pc-gold li svg{color:var(--lesedi-deep)}
+.pc-green .pic{background:#DFF3EC;color:var(--verify)}
+.pc-green li svg{color:var(--verify)}
+.pc-indigo .pic{background:var(--indigo-soft);color:var(--indigo)}
+.pc-indigo li svg{color:var(--indigo)}
+.pc-ink .pic{background:#EBE7F2;color:var(--ink)}
+.pc-ink li svg{color:var(--ink)}
+
+/* ---------- Exam Challenge ---------- */
+.exam{background:var(--ink);color:var(--paper-on-dark);overflow:hidden}
+.exam::before{content:"";position:absolute;bottom:-20%;right:-10%;width:55%;height:120%;
+  background:radial-gradient(circle,rgba(244,183,64,.14),transparent 60%);pointer-events:none}
+.exam-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;position:relative}
+.exam-steps{list-style:none;display:flex;flex-direction:column;gap:2px;margin-top:34px}
+.exam-steps li{display:grid;grid-template-columns:auto 1fr;gap:18px;padding:18px 0;border-top:1px solid var(--ink-line)}
+.exam-steps li:last-child{border-bottom:1px solid var(--ink-line)}
+.exam-steps .sn{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--lesedi);padding-top:2px}
+.exam-steps h4{font-family:var(--sans);font-size:16px;font-weight:800;color:#fff;margin-bottom:3px}
+.exam-steps p{font-size:14px;color:var(--muted-on-dark)}
+
+/* interactive exam demo */
+.demo{position:relative;background:#0C0A14;border:1px solid var(--ink-line);border-radius:30px;padding:14px;
+  box-shadow:0 40px 80px -30px rgba(0,0,0,.8);min-height:520px;display:flex;flex-direction:column}
+.demo-screen{flex:1;border-radius:20px;background:#100D1B;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:30px 26px;position:relative;overflow:hidden;transition:background .5s}
+.demo-screen .stage-label{position:absolute;top:16px;left:0;right:0;font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted-dim)}
+.d-check{list-style:none;text-align:left;display:flex;flex-direction:column;gap:14px;width:100%;max-width:230px}
+.d-check li{display:flex;gap:12px;align-items:center;font-size:14px;color:var(--paper-on-dark);font-weight:600}
+.d-check li .box{width:22px;height:22px;border-radius:7px;border:2px solid var(--verify);display:grid;place-items:center;flex:none}
+.d-check li .box svg{width:13px;height:13px;color:var(--verify)}
+.d-count{font-family:var(--serif);font-size:120px;font-weight:600;color:var(--lesedi);line-height:1;animation:pop .5s ease}
+@keyframes pop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+.d-timer{font-family:var(--mono);font-size:56px;font-weight:600;letter-spacing:.04em;color:#fff}
+.d-paper-note{font-size:13px;color:var(--muted-on-dark);margin-top:12px;max-width:220px}
+.d-bar{width:100%;max-width:240px;height:6px;border-radius:100px;background:rgba(255,255,255,.1);margin-top:22px;overflow:hidden}
+.d-bar i{display:block;height:100%;background:var(--lesedi);width:64%;border-radius:100px}
+.demo.amber .demo-screen{background:#241a08}.demo.amber .d-timer{color:var(--lesedi)}
+.demo.red .demo-screen{background:#2a0f10}.demo.red .d-timer{color:#ff6b6b;animation:pulseRed 1s ease-in-out infinite}
+@keyframes pulseRed{50%{opacity:.5}}
+.d-pen{font-family:var(--serif);font-size:44px;font-weight:700;color:#fff;letter-spacing:.02em}
+.d-pen-sub{font-size:13px;color:var(--muted-on-dark);margin-top:10px}
+.d-memo{width:100%;max-width:250px}
+.d-memo .lock{width:52px;height:52px;border-radius:14px;background:rgba(46,139,107,.18);display:grid;place-items:center;margin:0 auto 18px}
+.d-memo .lock svg{width:26px;height:26px;color:var(--verify)}
+.d-memo h5{font-family:var(--serif);font-size:22px;color:#fff;margin-bottom:8px}
+.d-memo p{font-size:13px;color:var(--muted-on-dark)}
+.demo-ctrl{display:flex;align-items:center;gap:12px;padding:14px 6px 4px}
+.demo-ctrl button{flex:1;font-family:var(--sans);font-weight:700;font-size:14px;padding:13px;border-radius:12px;border:none;cursor:pointer;transition:transform .2s,opacity .2s}
+.demo-ctrl .go{background:var(--lesedi);color:var(--ink)}
+.demo-ctrl .go:hover{transform:translateY(-2px)}
+.demo-ctrl .reset{background:transparent;color:var(--muted-on-dark);border:1px solid var(--ink-line);flex:0 0 auto;padding:13px 18px}
+.demo-dots{display:flex;gap:6px;justify-content:center;padding:2px 0 10px}
+.demo-dots span{width:7px;height:7px;border-radius:50%;background:var(--ink-line);transition:all .3s}
+.demo-dots span.on{background:var(--lesedi);width:22px;border-radius:100px}
+
+/* ---------- African / differentiators ---------- */
+.african{background:var(--paper-dim)}
+.afr-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.afr{background:var(--paper);border:1px solid var(--paper-line);border-radius:var(--r-md);padding:28px}
+.afr .k{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--indigo);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.afr .k svg{width:16px;height:16px}
+.afr h4{font-family:var(--serif);font-size:20px;color:var(--text);margin-bottom:8px}
+.afr p{font-size:14px;color:var(--muted)}
+
+/* ---------- Responsible AI ---------- */
+.responsible{background:var(--paper)}
+.resp-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:60px;align-items:center}
+.resp-notice{background:var(--ink);color:var(--paper-on-dark);border-radius:var(--r-lg);padding:38px;position:relative;overflow:hidden}
+.resp-notice::before{content:"";position:absolute;top:-30%;right:-20%;width:70%;height:100%;background:radial-gradient(circle,rgba(46,139,107,.25),transparent 65%)}
+.resp-notice .rn-ic{width:52px;height:52px;border-radius:14px;background:rgba(46,139,107,.2);display:grid;place-items:center;margin-bottom:20px;position:relative}
+.resp-notice .rn-ic svg{width:26px;height:26px;color:#5fd6ac}
+.resp-notice h3{font-size:26px;color:#fff;margin-bottom:12px;position:relative}
+.resp-notice p{font-size:15px;color:var(--muted-on-dark);position:relative}
+.resp-notice .quote{margin-top:22px;padding-top:22px;border-top:1px solid var(--ink-line);font-family:var(--serif);font-style:italic;font-size:17px;color:var(--lesedi);position:relative}
+.resp-list{list-style:none;display:flex;flex-direction:column;gap:20px}
+.resp-list li{display:grid;grid-template-columns:auto 1fr;gap:16px}
+.resp-list .ri{width:42px;height:42px;border-radius:12px;background:var(--indigo-soft);display:grid;place-items:center;flex:none}
+.resp-list .ri svg{width:20px;height:20px;color:var(--indigo)}
+.resp-list h4{font-family:var(--sans);font-size:16px;font-weight:800;color:var(--text);margin-bottom:3px}
+.resp-list p{font-size:14px;color:var(--muted)}
+
+/* ---------- Founder / built solo ---------- */
+.founder{background:var(--ink);color:var(--paper-on-dark);overflow:hidden}
+.founder::before{content:"";position:absolute;top:-10%;left:-10%;width:50%;height:120%;background:radial-gradient(circle,rgba(90,72,232,.2),transparent 60%)}
+.founder-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start;position:relative}
+.founder-copy h2{font-size:clamp(30px,4vw,46px);color:#fff;margin:20px 0 20px}
+.founder-copy p{font-size:16px;color:var(--muted-on-dark);margin-bottom:18px}
+.founder-copy .sig{font-family:var(--serif);font-style:italic;font-size:22px;color:var(--lesedi);margin-top:8px}
+.eng-table{background:rgba(255,255,255,.03);border:1px solid var(--ink-line);border-radius:var(--r-lg);overflow:hidden}
+.eng-table .row{display:grid;grid-template-columns:130px 1fr;gap:14px;padding:16px 22px;border-bottom:1px solid var(--ink-line)}
+.eng-table .row:last-child{border-bottom:none}
+.eng-table .row .l{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--lesedi);padding-top:2px}
+.eng-table .row .v{font-size:13.5px;color:var(--paper-on-dark);line-height:1.5}
+.eng-cap{font-family:var(--serif);font-style:italic;font-size:15px;color:var(--muted-on-dark);text-align:center;margin-top:22px}
+
+/* ---------- CTA ---------- */
+.cta-sec{background:var(--paper);padding:40px 0 110px}
+.cta{background:linear-gradient(150deg,#211C30,var(--ink));border-radius:36px;padding:64px 48px;text-align:center;position:relative;overflow:hidden}
+.cta::before{content:"";position:absolute;top:-40%;left:50%;transform:translateX(-50%);width:560px;height:560px;
+  background:radial-gradient(circle,rgba(244,183,64,.28),transparent 60%);pointer-events:none}
+.cta .eyebrow{margin-bottom:20px;justify-content:center}
+.cta h2{font-size:clamp(32px,4.6vw,52px);color:#fff;position:relative;margin-bottom:18px}
+.cta h2 .lit{color:var(--lesedi);font-style:italic}
+.cta p{font-size:17px;color:var(--muted-on-dark);max-width:480px;margin:0 auto 34px;position:relative}
+.cta .btn{position:relative}
+.cta-note{font-size:13px;color:var(--muted-dim);margin-top:20px;position:relative}
+
+/* ---------- Footer ---------- */
+footer{background:var(--ink);color:var(--muted-on-dark);border-top:1px solid var(--ink-line);padding:70px 0 34px}
+.foot-grid{display:grid;grid-template-columns:1.6fr 1fr 1fr 1.2fr;gap:40px;margin-bottom:48px}
+.foot-brand .brand{color:#fff;margin-bottom:16px}
+.foot-brand p{font-size:14px;max-width:280px;margin-bottom:20px}
+.foot-motto{font-family:var(--serif);font-style:italic;font-size:16px;color:var(--lesedi)}
+.foot-col h5{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#fff;margin-bottom:18px;font-weight:600}
+.foot-col a,.foot-col span{display:block;font-size:14px;color:var(--muted-on-dark);padding:6px 0;transition:color .2s}
+.foot-col a:hover{color:var(--lesedi)}
+.foot-bottom{border-top:1px solid var(--ink-line);padding-top:24px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--muted-dim)}
+.foot-bottom .made{display:flex;align-items:center;gap:6px}
+.foot-bottom .made svg{width:14px;height:14px;color:var(--lesedi)}
+
+/* ---------- reveal ---------- */
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .8s cubic-bezier(.2,.6,.2,1),transform .8s cubic-bezier(.2,.6,.2,1)}
+.reveal.in{opacity:1;transform:none}
+
+/* ---------- Responsive ---------- */
+@media(max-width:960px){
+  .nav-links{display:none}
+  .nav-cta .btn:not(.burger){display:none}
+  .burger{display:block}
+  .hero-grid,.exam-grid,.resp-grid,.founder-grid{grid-template-columns:1fr;gap:48px}
+  .phone-stage{order:-1;min-height:auto}
+  .afr-grid{grid-template-columns:1fr 1fr}
+  .foot-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:640px){
+  .wrap{padding:0 20px}
+  .section{padding:80px 0}
+  .hero{padding:130px 0 70px}
+  .pillar-grid{grid-template-columns:1fr}
+  .afr-grid,.foot-grid{grid-template-columns:1fr}
+  .facts-in{gap:20px}
+  .fact{width:calc(50% - 20px)}
+  .cta{padding:48px 26px}
+  .resp-notice,.pillar{padding:28px}
+  .foot-bottom{flex-direction:column;align-items:flex-start}
+}
+@media(prefers-reduced-motion:reduce){
+  *{animation:none!important;scroll-behavior:auto!important;transition-duration:.01ms!important}
+  .reveal{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ NAV ============ -->
+<header class="nav" id="nav">
+  <div class="wrap nav-in">
+    <a href="#home" class="brand">
+      <img src="app-icon.png" alt="" class="brand-img" />
+      Thuto Notes
+    </a>
+    <nav class="nav-links">
+      <a href="#tools">The tools</a>
+      <a href="#exam">Exam Challenge</a>
+      <a href="#african">Built for us</a>
+      <a href="#responsible">Responsible AI</a>
+      <a href="#founder">The story</a>
+    </nav>
+    <div class="nav-cta">
+      <a href="https://play.google.com/store/search?q=thuto+notes&amp;c=apps&amp;hl=en_ZA" target="_blank" rel="noopener" class="btn btn-gold">
+        <span class="play"><svg viewBox="0 0 24 24" fill="var(--ink)"><path d="M3 3l16 9-16 9V3z"/></svg></span>
+        Get the app
+      </a>
+      <button class="burger" id="burger" aria-label="Open menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+    </div>
+  </div>
+</header>
+
+<div class="mobile-menu" id="mobileMenu">
+  <div class="mm-top">
+    <span class="brand"><img src="app-icon.png" alt="" class="brand-img" />Thuto Notes</span>
+    <button class="mm-close" id="mmClose" aria-label="Close menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+  </div>
+  <nav>
+    <a href="#tools">The tools</a>
+    <a href="#exam">Exam Challenge</a>
+    <a href="#african">Built for us</a>
+    <a href="#responsible">Responsible AI</a>
+    <a href="#founder">The story</a>
+  </nav>
+  <a href="https://play.google.com/store/search?q=thuto+notes&amp;c=apps&amp;hl=en_ZA" target="_blank" rel="noopener" class="btn btn-gold">Get it on Google Play</a>
+</div>
+
+<!-- ============ HERO ============ -->
+<section class="hero" id="home">
+  <div class="wrap hero-grid">
+    <div class="hero-copy reveal">
+      <span class="eyebrow on-dark"><span class="tick"></span>NSC · CAPS · Grade 11 &amp; 12</span>
+      <h1>Your matric exam coach. Free, offline, <span class="lit">always on.</span></h1>
+      <p class="lead">Thuto Notes turns real DBE past papers into CAPS-aligned notes, marks your homework step by step, and puts a full exam hall in your pocket — on the cheapest phone you own, with no data.</p>
+      <div class="hero-cta">
+        <a href="https://play.google.com/store/search?q=thuto+notes&amp;c=apps&amp;hl=en_ZA" target="_blank" rel="noopener" class="btn btn-gold">
+          <span class="play"><svg viewBox="0 0 24 24" fill="var(--ink)"><path d="M3 3l16 9-16 9V3z"/></svg></span>
+          <span><small>Get it on</small><span class="lbl2">Google Play</span></span>
+        </a>
+      </div>
+      <div class="hero-chips">
+        <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg>Free, forever</span>
+        <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg>Works with no signal</span>
+        <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg>CAPS-locked</span>
+        <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg>Native Afrikaans</span>
+      </div>
+    </div>
+
+    <div class="phone-stage reveal">
+      <div class="halo"></div>
+      <div class="showcase">
+        <img src="app-showcase.png" alt="Thuto Notes — your ultimate CAPS study companion, shown on a phone" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FACTS ============ -->
+<div class="facts">
+  <div class="facts-in">
+    <div class="fact reveal"><span class="fi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span><div><b>Free</b><span>No paywall on any core feature</span></div></div>
+    <div class="fact reveal"><span class="fi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span><div><b>6</b><span>NSC subjects, real DBE papers</span></div></div>
+    <div class="fact reveal"><span class="fi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/><line x1="2" y1="2" x2="22" y2="22"/></svg></span><div><b>Offline</b><span>Notes, quizzes &amp; papers with no data</span></div></div>
+    <div class="fact reveal"><span class="fi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span><div><b>CAPS-locked</b><span>On curriculum, never off-topic</span></div></div>
+    <div class="fact reveal"><span class="fi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 8 6 6M4 14l6-6 2-3M2 5h12M7 2h1M22 22l-5-10-5 10M14 18h6"/></svg></span><div><b>Afrikaans</b><span>EAT notes generated natively</span></div></div>
+  </div>
+</div>
+
+<!-- ============ PILLARS ============ -->
+<section class="section pillars" id="tools">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow"><span class="tick"></span>Four tools, one exam plan</span>
+      <h2>Everything a tutor does — without the R400 an hour.</h2>
+      <p>Thuto Notes isn't a chatbot in a school skin. It's a purpose-built exam preparation system with four pillars, each modelled on how learners actually earn marks in the NSC.</p>
+    </div>
+    <div class="pillar-grid">
+      <div class="pillar pc-gold reveal">
+        <span class="num">01 · Learn</span>
+        <div class="pic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
+        <h3>AI Note Generator</h3>
+        <p>Pick a subject and topic, get a full CAPS note in under a minute — mirrored on the real DBE paper and memo for that subject, not a generic textbook summary.</p>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg>Model answer in NSC academic register</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg>Examiner tips &amp; mark-allocation guidance</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg>Common traps, key terms &amp; five quiz questions</li>
+        </ul>
+      </div>
+
+      <div class="pillar pc-green reveal">
+        <span class="num">02 · Solve</span>
+        <div class="pic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></div>
+        <h3>Homework AI Helper</h3>
+        <p>Photograph any question — handwritten, printed, an equation, a diagram — and get a full worked solution that states the rule, shows every step, and checks itself.</p>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg>Vision reads every digit, operator and unit</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg>Verifies the answer by substitution</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg>“Explain like I'm 10” mode with SA analogies</li>
+        </ul>
+      </div>
+
+      <div class="pillar pc-ink reveal">
+        <span class="num">03 · Perform</span>
+        <div class="pic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2"/><path d="M5 3 2 6M22 6l-3-3M9 1h6"/></svg></div>
+        <h3>Exam Challenge</h3>
+        <p>The couch teaches you content. It doesn't teach you to perform under pressure. Exam Challenge turns your screen into a real, timed NSC sitting — the way November actually feels.</p>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg>Real DBE paper, real duration counting down</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg>Full-screen “PEN DOWN” at 00:00</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg>Memo unlocks only after — mark yourself honestly</li>
+        </ul>
+      </div>
+
+      <div class="pillar pc-indigo reveal">
+        <span class="num">04 · Retain</span>
+        <div class="pic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4M16 2v4M3 10h18"/><rect x="3" y="4" width="18" height="18" rx="2"/><path d="m9 16 2 2 4-4"/></svg></div>
+        <h3>Revision &amp; Planning</h3>
+        <p>Turn every note into flashcards, plan your study around real exam dates, and let streaks reward the one thing that predicts matric results most: showing up consistently.</p>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg>Auto flashcards with a “memorised” tracker</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg>Study planner with push reminders</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg>Highlight in six colours &amp; add your own notes</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ EXAM CHALLENGE ============ -->
+<section class="section exam on-dark" id="exam">
+  <div class="wrap exam-grid">
+    <div class="reveal">
+      <span class="eyebrow on-dark"><span class="tick"></span>The feature I'm proudest of</span>
+      <div class="section-head" style="margin-bottom:0">
+        <h2>A real exam hall,<br>in your pocket.</h2>
+        <p>Practising a past paper on the couch teaches you the work. It doesn't teach you to hold your nerve when the clock is real. So the whole screen becomes the exam.</p>
+      </div>
+      <ol class="exam-steps">
+        <li><span class="sn">01</span><div><h4>Pre-exam checklist</h4><p>Pen and paper ready, quiet room, phone silenced, three deep breaths.</p></div></li>
+        <li><span class="sn">02</span><div><h4>The room goes dark</h4><p>A 3 · 2 · 1 countdown starts the paper. No going back.</p></div></li>
+        <li><span class="sn">03</span><div><h4>The real clock runs</h4><p>Last ten minutes turn amber. The final two minutes pulse red.</p></div></li>
+        <li><span class="sn">04</span><div><h4>“Pen down.”</h4><p>At 00:00 the screen locks — exactly as an invigilator would call it.</p></div></li>
+        <li><span class="sn">05</span><div><h4>Then the memo unlocks</h4><p>Only now can you mark your own work, honestly, against the official memorandum.</p></div></li>
+      </ol>
+    </div>
+
+    <!-- Interactive demo -->
+    <div class="reveal">
+      <div class="demo" id="demo">
+        <div class="demo-screen" id="demoScreen">
+          <div class="stage-label" id="stageLabel">Ready</div>
+          <div id="demoContent">
+            <ul class="d-check">
+              <li><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg></span>Pen &amp; paper ready</li>
+              <li><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg></span>Quiet room</li>
+              <li><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg></span>Phone silenced</li>
+              <li><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg></span>Three deep breaths</li>
+            </ul>
+          </div>
+        </div>
+        <div class="demo-dots" id="demoDots">
+          <span class="on"></span><span></span><span></span><span></span><span></span>
+        </div>
+        <div class="demo-ctrl">
+          <button class="go" id="demoGo">Begin the exam</button>
+          <button class="reset" id="demoReset" aria-label="Reset">Reset</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ BUILT FOR US ============ -->
+<section class="section african" id="african">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow"><span class="tick"></span>A genuinely African solution</span>
+      <h2>This app could not exist anywhere else.</h2>
+      <p>Thuto Notes isn't a global app localised for Africa. Every layer of it — curriculum, content, language, even the cryptography — was built for a specific learner on a specific phone in a specific country.</p>
+    </div>
+    <div class="afr-grid">
+      <div class="afr reveal">
+        <div class="k"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Curriculum</div>
+        <h4>CAPS to the letter</h4>
+        <p>Built against the CAPS curriculum and NSC standard — including DBE mark descriptors and marking-guideline vocabulary.</p>
+      </div>
+      <div class="afr reveal">
+        <div class="k"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Content</div>
+        <h4>Real past papers</h4>
+        <p>Sourced from official DBE and Western Cape Education Department past papers and memoranda — the real thing, not a summary.</p>
+      </div>
+      <div class="afr reveal">
+        <div class="k"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 8 6 6M4 14l6-6 2-3M2 5h12M7 2h1M22 22l-5-10-5 10M14 18h6"/></svg>Language</div>
+        <h4>Afrikaans, natively</h4>
+        <p>Afrikaans (Eerste Addisionele Taal) notes are generated in Afrikaans from the start — not machine-translated after the fact.</p>
+      </div>
+      <div class="afr reveal">
+        <div class="k"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>Data reality</div>
+        <h4>Download once, forever</h4>
+        <p>Cache-first architecture. A paper is fetched once, then opens instantly with zero signal and zero further data cost.</p>
+      </div>
+      <div class="afr reveal">
+        <div class="k"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18"/></svg>Device reality</div>
+        <h4>Runs on entry-level Android</h4>
+        <p>Engineered for the cheapest phones — down to a hand-written cryptography layer for a platform bug found, diagnosed and fixed solo.</p>
+      </div>
+      <div class="afr reveal">
+        <div class="k"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Economics</div>
+        <h4>Free, permanently</h4>
+        <p>Funded by ads placed only at genuine breaks — so the learner who needs it most pays nothing, ever.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ RESPONSIBLE AI ============ -->
+<section class="section responsible" id="responsible">
+  <div class="wrap">
+    <div class="section-head center reveal">
+      <span class="eyebrow"><span class="tick"></span>Responsible AI</span>
+      <h2>A study aid — not a cheating machine.</h2>
+    </div>
+    <div class="resp-grid">
+      <div class="resp-notice reveal">
+        <div class="rn-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg></div>
+        <h3>Study Aid Notice</h3>
+        <p>The easiest app to build would do learners' homework for them. Thuto Notes deliberately does the opposite — it teaches method so you can reproduce it in the exam, and always points you back to your teacher and the official marking guidelines.</p>
+        <div class="quote">“Thuto ke lesedi.” · Education is light.</div>
+      </div>
+      <ul class="resp-list reveal">
+        <li>
+          <span class="ri"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span>
+          <div><h4>Teaches method, not answers</h4><p>It states the rule before applying it and shows every step, so you learn to do it yourself.</p></div>
+        </li>
+        <li>
+          <span class="ri"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span>
+          <div><h4>Essay-writing is blocked</h4><p>“Write my assignment for me” requests are explicitly refused. It won't make your work disappear.</p></div>
+        </li>
+        <li>
+          <span class="ri"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
+          <div><h4>Scope-locked to CAPS</h4><p>Ask about gossip, sports scores or anything off-syllabus and it declines. It stays on the curriculum.</p></div>
+        </li>
+        <li>
+          <span class="ri"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><path d="M12 3a9 9 0 1 0 9 9"/><path d="M21 3l-9 9"/></svg></span>
+          <div><h4>Jailbreak-resistant</h4><p>Prompt-injection and jailbreak attempts are filtered before they ever reach the model.</p></div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOUNDER ============ -->
+<section class="section founder on-dark" id="founder">
+  <div class="wrap founder-grid">
+    <div class="founder-copy reveal">
+      <span class="eyebrow on-dark"><span class="tick"></span>Built solo · Soshanguve</span>
+      <h2>One developer. One laptop. A problem he lived through.</h2>
+      <p>Every line of Thuto Notes — the product, the design, the app, the backend, the security layer, the content pipeline — was built by one 20-year-old in Soshanguve, Pretoria. No team, no agency, no funding round.</p>
+      <p>It was built by someone who knows exactly what it feels like to face a syllabus you're expected to master with no resources to master it with. So he built the resources. For us.</p>
+      <p class="sig">“Not the exception to the problem — the product of it.”</p>
+    </div>
+    <div class="reveal">
+      <div class="eng-table">
+        <div class="row"><span class="l">Mobile</span><span class="v">React Native (Expo), TypeScript, NativeWind — full light/dark theming, error boundaries on every screen.</span></div>
+        <div class="row"><span class="l">AI</span><span class="v">Groq inference — Llama 3.3 70B for reasoning, Llama 4 Scout for vision.</span></div>
+        <div class="row"><span class="l">Backend</span><span class="v">Custom proxy service. No AI key ever ships inside the app.</span></div>
+        <div class="row"><span class="l">Security</span><span class="v">HMAC-SHA256 request signing with a 30-second replay window, plus Firebase Anonymous Auth. Hand-written pure-JS SHA-256.</span></div>
+        <div class="row"><span class="l">Delivery</span><span class="v">Cloudflare R2 with a cache-first, resumable, de-duplicated download layer.</span></div>
+        <div class="row"><span class="l">Safety</span><span class="v">Hard CAPS scope-lock plus a prompt-injection filter, so it can't be turned into a general chatbot.</span></div>
+      </div>
+      <p class="eng-cap">Every one of those decisions made, debugged and shipped by one person.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CTA ============ -->
+<section class="cta-sec" id="download">
+  <div class="wrap">
+    <div class="cta reveal">
+      <span class="eyebrow on-dark"><span class="tick"></span>Free on Google Play</span>
+      <h2>Education is <span class="lit">light.</span><br>Carry it with you.</h2>
+      <p>Real past papers, six subjects, an exam hall in your pocket — on the cheapest phone you own, with no data, at any hour of the night.</p>
+      <a href="https://play.google.com/store/search?q=thuto+notes&amp;c=apps&amp;hl=en_ZA" target="_blank" rel="noopener" class="btn btn-gold" id="playBtn">
+        <span class="play"><svg viewBox="0 0 24 24" fill="var(--ink)"><path d="M3 3l16 9-16 9V3z"/></svg></span>
+        <span><small>Get it on</small><span class="lbl2">Google Play</span></span>
+      </a>
+      <p class="cta-note">Free forever · No sign-up wall · Works offline</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <a href="#home" class="brand"><img src="app-icon.png" alt="" class="brand-img" />Thuto Notes</a>
+        <p>A free, offline, CAPS-locked AI study companion for South African matriculants.</p>
+        <div class="foot-motto">Thuto ke lesedi.</div>
+      </div>
+      <div class="foot-col">
+        <h5>Explore</h5>
+        <a href="#tools">The tools</a>
+        <a href="#exam">Exam Challenge</a>
+        <a href="#african">Built for us</a>
+        <a href="#responsible">Responsible AI</a>
+        <a href="#founder">The story</a>
+      </div>
+      <div class="foot-col">
+        <h5>Legal</h5>
+        <a href="https://political-thought-4c5.notion.site/Privacy-Policy-Thuto-Notes-056b5d413b364f66b0993b830af075ea" target="_blank" rel="noopener">Privacy Policy</a>
+        <a href="terms.html">Terms of Use</a>
+        <a href="advertising.html">Advertising &amp; ads disclosure</a>
+      </div>
+      <div class="foot-col">
+        <h5>Contact</h5>
+        <a href="mailto:dolamonyakallo07@gmail.com">dolamonyakallo07@gmail.com</a>
+        <span>Soshanguve, Pretoria</span>
+        <span>Gauteng, South Africa</span>
+        <a href="https://play.google.com/store/search?q=thuto+notes&amp;c=apps&amp;hl=en_ZA" target="_blank" rel="noopener">Get it on Google Play</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 Thuto Notes. All rights reserved.</span>
+      <span class="made">Made with <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 21s-7-4.35-9.5-8.5C.5 9 2.5 5 6 5c2 0 3.5 1.2 4 2 .5-.8 2-2 4-2 3.5 0 5.5 4 3.5 7.5C19 16.65 12 21 12 21z"/></svg> in Soshanguve, Pretoria</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  // Nav solid on scroll
+  var nav=document.getElementById('nav');
+  var onScroll=function(){ nav.classList.toggle('solid', window.scrollY>40); };
+  onScroll(); window.addEventListener('scroll',onScroll,{passive:true});
+
+  // Mobile menu
+  var mm=document.getElementById('mobileMenu');
+  document.getElementById('burger').addEventListener('click',function(){mm.classList.add('open');document.body.style.overflow='hidden';});
+  var closeMenu=function(){mm.classList.remove('open');document.body.style.overflow='';};
+  document.getElementById('mmClose').addEventListener('click',closeMenu);
+  mm.querySelectorAll('a').forEach(function(a){a.addEventListener('click',closeMenu);});
+
+  // Scroll reveal
+  var io=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} });
+  },{threshold:0.12,rootMargin:'0px 0px -40px 0px'});
+  document.querySelectorAll('.reveal').forEach(function(el,i){
+    el.style.transitionDelay=(Math.min(i%4,3)*70)+'ms';
+    io.observe(el);
+  });
+
+  // ---- Exam Challenge interactive demo ----
+  var screen=document.getElementById('demoScreen');
+  var content=document.getElementById('demoContent');
+  var label=document.getElementById('stageLabel');
+  var go=document.getElementById('demoGo');
+  var reset=document.getElementById('demoReset');
+  var demo=document.getElementById('demo');
+  var dots=document.getElementById('demoDots').children;
+  var timers=[];
+  var stage=0;
+
+  var checklistHTML='<ul class="d-check">'+
+    '<li><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg></span>Pen &amp; paper ready</li>'+
+    '<li><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg></span>Quiet room</li>'+
+    '<li><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg></span>Phone silenced</li>'+
+    '<li><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg></span>Three deep breaths</li></ul>';
+
+  function clearTimers(){ timers.forEach(clearTimeout); timers=[]; }
+  function setDot(n){ for(var i=0;i<dots.length;i++) dots[i].classList.toggle('on', i<=n); }
+  function t(fn,ms){ timers.push(setTimeout(fn,ms)); }
+
+  function reset0(){
+    clearTimers(); stage=0; demo.className='demo';
+    label.textContent='Ready';
+    content.innerHTML=checklistHTML;
+    go.textContent='Begin the exam'; go.disabled=false; setDot(0);
+  }
+
+  function run(){
+    clearTimers(); go.disabled=true;
+    // 1: countdown
+    demo.className='demo'; label.textContent='Life Sciences P1 · 150 min';
+    setDot(1);
+    var n=3;
+    content.innerHTML='<div class="d-count">'+n+'</div>';
+    var tick=function(){
+      n--;
+      if(n>0){ content.innerHTML='<div class="d-count">'+n+'</div>'; t(tick,700); }
+      else { paperGreen(); }
+    };
+    t(tick,700);
+  }
+  function paperGreen(){
+    demo.className='demo'; label.textContent='In progress'; setDot(2);
+    content.innerHTML='<div class="d-timer">28:15</div><div class="d-paper-note">Question 2.3 · Explain the role of the ribosome in protein synthesis. (4)</div><div class="d-bar"><i></i></div>';
+    t(paperAmber,1400);
+  }
+  function paperAmber(){
+    demo.className='demo amber'; label.textContent='10 minutes left'; setDot(2);
+    content.innerHTML='<div class="d-timer">09:41</div><div class="d-paper-note">Keep moving — check your mark allocations.</div><div class="d-bar"><i style="width:88%"></i></div>';
+    t(paperRed,1400);
+  }
+  function paperRed(){
+    demo.className='demo red'; label.textContent='Final minutes'; setDot(2);
+    content.innerHTML='<div class="d-timer">01:12</div><div class="d-paper-note">Finish your last point.</div><div class="d-bar"><i style="width:98%"></i></div>';
+    t(penDown,1500);
+  }
+  function penDown(){
+    demo.className='demo red'; label.textContent='Time'; setDot(3);
+    content.innerHTML='<div class="d-pen">PEN DOWN</div><div class="d-pen-sub">Stop writing. Put your pen down.</div>';
+    t(memo,1600);
+  }
+  function memo(){
+    demo.className='demo'; label.textContent='Now mark honestly'; setDot(4);
+    content.innerHTML='<div class="d-memo"><div class="lock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div><h5>Memorandum unlocked</h5><p>Mark your own paper against the official DBE memo — the only honest way to know where you stand.</p></div>';
+    go.textContent='Run it again'; go.disabled=false; stage=0;
+  }
+
+  go.addEventListener('click',run);
+  reset.addEventListener('click',reset0);
+})();
+</script>
+</body>
+</html>
